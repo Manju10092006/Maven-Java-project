@@ -8,6 +8,8 @@ Academic Year: 2026
 
 ---
 
+Testing automatic Jenkins CI/CD trigger through GitHub Webhook.
+
 ## Project Overview
 This repository contains the Maven Java SE Application (my-maven-project) developed during Week 4. It covers:
 - Standard Maven Directory Structure (src/main/java, src/test/java,hg target/).
