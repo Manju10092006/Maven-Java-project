@@ -8,7 +8,7 @@ Academic Year: 2026
 
 ---
 
-Testing automatic Jenkins CI/CD trigger through GitHub Webhook.
+Testing automatic Jenkins CI/CD trigger through GitHub.
 
 ## Project Overview
 This repository contains the Maven Java SE Application (my-maven-project) developed during Week 4. It covers:
