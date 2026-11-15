@@ -105,3 +105,98 @@ pipeline {
 
 
 
+pipeline {
+    agent any
+
+    tools {
+        maven 'MAVEN-HOME'
+    }
+
+    environment {
+        DOCKER_IMAGE = 'sogalapallimanjunathreddy/maven-web-app:v1'
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/sogalapallimanju/WEEK4-24BD1A665N-24BD1A665P-MavenJava.git'
+            }
+        }
+
+        stage('Clean') {
+            steps {
+                bat 'mvn clean'
+            }
+        }
+
+        stage('Install') {
+            steps {
+                bat 'mvn install'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                bat 'mvn test'
+            }
+        }
+
+        stage('Package') {
+            steps {
+                bat 'mvn package'
+                bat 'copy /Y target\\my-maven-project-1.0-SNAPSHOT.war my-maven-project-1.0-SNAPSHOT.war'
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                bat 'docker build -t %DOCKER_IMAGE% .'
+            }
+        }
+
+        stage('Docker Push') {
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'dockerhub-credentials',
+                        usernameVariable: 'DOCKER_USER',
+                        passwordVariable: 'DOCKER_PASS'
+                    )
+                ]) {
+                    bat '''
+                        echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin
+                        docker push %DOCKER_IMAGE%
+                        docker logout
+                    '''
+                }
+            }
+        }
+
+        stage('Result') {
+            steps {
+                echo 'Maven build and Docker deployment completed successfully!'
+            }
+        }
+    }
+
+    post {
+        success {
+            emailext(
+                to: 'manju.sogala@gmail.com',
+                subject: "SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: "Build completed successfully.\n\nJob: ${env.JOB_NAME}\nBuild Number: ${env.BUILD_NUMBER}\nBuild URL: ${env.BUILD_URL}"
+            )
+        }
+
+        failure {
+            emailext(
+                to: 'manju.sogala@gmail.com',
+                subject: "FAILURE: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: "Build failed.\n\nJob: ${env.JOB_NAME}\nBuild Number: ${env.BUILD_NUMBER}\nBuild URL: ${env.BUILD_URL}"
+            )
+        }
+    }
+}
+
