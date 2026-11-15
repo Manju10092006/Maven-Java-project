@@ -49,3 +49,30 @@ pipeline {
         }
     }
 }
+
+
+
+
+node {
+
+    stage('Checkout') {
+        git branch: 'main',
+            url: 'https://github.com/sogalapallimanju/WEEK4-24BD1A665N-24BD1A665P-MavenJava.git'
+    }
+
+    stage('Build') {
+        def mvnHome = tool 'MAVEN-HOME'
+
+        withEnv(["PATH+MAVEN=${mvnHome}\\bin"]) {
+            bat 'mvn clean package'
+        }
+    }
+
+    stage('Result') {
+        echo 'Maven build and tests completed successfully!'
+    }
+
+}
+
+
+
