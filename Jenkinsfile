@@ -387,4 +387,45 @@ copy target\my-maven-project-1.0-SNAPSHOT.war .
 docker build -t sogalapallimanjunathreddy/maven-web-app:v1 .
 docker run -d --name maven-web-app -p 8081:8080 sogalapallimanjunathreddy/maven-web-app:v1
 
+#######AWS
+Step 2: Navigate to your key folder
+Copy and execute:
+cd /d "C:////"
+Step 3: Fix private key permissions
+Execute these commands one by one:
+icacls "maven-server-key.pem" /inheritance:r
+icacls "maven-server-key.pem" /remove "CodexSandboxUsers"
+icacls "maven-server-key.pem" /grant:r "%USERNAME%:R"
+ssh -i maven-server-key.pem ubuntu@3.95.9.97
+sudo apt update
+sudo apt install docker.io -y
+sudo systemctl enable docker 
+sudo docker pull smr/maven-web-app:v1
+sudo docker run -d --name maven-web-app -p 8083:8080 smr/maven-web-app:v1
+in browser it runs on that port
+#####Kubectl
+minikube start
+kubectl create deployment mynginx --image=nginx
+kubectl get deployments
+kubectl get pods
+kubectl describe pod POD_NAME
+kubectl scale deployment mynginx --replicas=4
+kubectl set image deployment/mynginx nginx=nginx:latest
+kubectl expose deployment mynginx --type=NodePort --port=80 --target-port=80
+kubectl port-forward svc/mynginx 8081:80
+localhost:8081
+
+##nagios
+docker pull jasonrivers/nagios:latest
+docker run --name nagiosdemo -p 8888:80 jasonrivers/nagios:latest
+docker start nagiosdemo
+docker stop nagiosdemo
+docker restart nagiosdemo
+docker ps
+docker logs nagiosdemo
+docker logs -f nagiosdemo
+docker rm nagiosdemo
+docker rmi jasonrivers/nagios:latest
+
+
 ngrok config add-authtoken YOUR_AUTHTOKEN https://abc123.ngrok-free.app/github-webhook/ ngrok http 8080
