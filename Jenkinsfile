@@ -200,4 +200,69 @@ pipeline {
     }
 }
 
+
+
+#####Pipeline Script
+
+pipeline {
+    agent any
+
+    tools {
+        maven 'MAVEN-HOME'
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/sogalapallimanju/WEEK4-24BD1A665N-24BD1A665P-MavenJava.git'
+            }
+        }
+
+        stage('Verify Project') {
+            steps {
+                bat 'dir'
+                bat 'if not exist pom.xml (echo ERROR: pom.xml not found & exit /b 1)'
+                bat 'mvn -version'
+            }
+        }
+
+        stage('Clean') {
+            steps {
+                bat 'mvn clean'
+            }
+        }
+
+        stage('Build and Package') {
+            steps {
+                bat 'mvn -B package'
+            }
+        }
+
+        stage('Verify Artifact') {
+            steps {
+                bat 'dir target'
+            }
+        }
+
+        stage('Archive Artifact') {
+            steps {
+                archiveArtifacts artifacts: 'target/*.war',
+                                 fingerprint: true
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'SUCCESS: Maven application built and packaged!'
+        }
+
+        failure {
+            echo 'FAILURE: Check the Jenkins Console Output.'
+        }
+    }
+}
+
 ngrok config add-authtoken YOUR_AUTHTOKEN https://abc123.ngrok-free.app/github-webhook/ ngrok http 8080
