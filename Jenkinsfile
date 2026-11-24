@@ -383,4 +383,8 @@ EXPOSE 8080
 
 CMD ["catalina.sh", "run"]
 
+copy target\my-maven-project-1.0-SNAPSHOT.war .
+docker build -t sogalapallimanjunathreddy/maven-web-app:v1 .
+docker run -d --name maven-web-app -p 8081:8080 sogalapallimanjunathreddy/maven-web-app:v1
+
 ngrok config add-authtoken YOUR_AUTHTOKEN https://abc123.ngrok-free.app/github-webhook/ ngrok http 8080
